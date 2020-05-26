@@ -15,7 +15,7 @@ import numpy as np
 
 IDX_DIR="/home/songzhuoran/video/video-block-based-acc/idx/"
 RES_DIR="/home/songzhuoran/video/video-block-based-acc/residual/"
-B_OUT_DIR="/home/songzhuoran/video/video-block-based-acc/mapping-propa/"
+B_OUT_DIR="/home/songzhuoran/video/video-block-based-acc/test/"
 P_DIR="/home/songzhuoran/video/video-block-based-acc/favos2016/"
 
 mvsmat = []
@@ -61,29 +61,15 @@ def bframe_gen_kernel(fcnt):
                 res2 = int(row[9])
                 res3 = int(row[10])
                 res = int((res1+res2+res3)/3)
-                if res < 20:
-                    mappingnum = mappingnum + 1
+                if res > 20:
                     for i in range(lengthx):
                         for j in range(lengthy):
                             if ((srcx+i)>=0 and (srcx+i)<480) and ((srcy+j)>=0 and (srcy+j)<854):
-                                bframe_img[srcx+i][srcy+j] = 0
-                            if ((dstx+i)>=0 and (dstx+i)<480) and ((dsty+j)>=0 and (dsty+j)<854):
-                                if ((srcx+i)>=0 and (srcx+i)<480) and ((srcy+j)>=0 and (srcy+j)<854):
-                                    if img_vis[srcx+i][srcy+j] == 0:
-                                        # if bframe_img[srcx+i][srcy+j] != dst[dstx+i][dsty+j]:
-                                        #     print "====================================="
-                                        bframe_img[srcx+i][srcy+j] = dst[dstx+i][dsty+j]
-                                    else :
-                                        # print "----------------------------------------"
-                                        bframe_img[srcx+i][srcy+j] = (int(dst[dstx+i][dsty+j]) + int(bframe_img[srcx+i][srcy+j])) / 2
-                                    img_vis[srcx+i][srcy+j] += 1
+                                bframe_img[srcx+i][srcy+j] = 187
     
     curstr = '%05d' % fcnt
     curstr = B_OUT_DIR + classname + "/" + curstr + ".png"
     cv2.imwrite(curstr,bframe_img)
-    mappingratio = float(float(mappingnum)/float(totalnum))
-    print classname + str(fcnt) + " ratio : " + str(mappingratio)
-    
 
 
 def DFS(fcnt):

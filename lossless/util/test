@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Warning: Next step will run training. "
+read -p "Continue (y/n)?" CONT
+
+while [ "$CONT" != "y" ]
+do
+echo "Refused to continue. "
+read -p "Continue (y/n)?" CONT
+done

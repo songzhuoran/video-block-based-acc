@@ -1,0 +1,27 @@
+#!/bin/bash
+OUT_DIR=../data
+
+val_names="cows scooter-black horsejump-high parkour paragliding-launch kite-surf breakdance drift-straight goat bmx-trees libby motocross-jump drift-chicane dance-twirl blackswan car-roundabout car-shadow dog soapbox camel"
+
+bframe_gen(){
+    rm -rf $OUT_DIR/val/bframe/*
+    # echo "Warning: Next step will run '$ rm -rf Bframe' command. "
+    # read -p "Continue (y/n)?" CONT
+    # if [ "$CONT" = "y" ]; then
+    #     rm -rf $OUT_DIR/val/bframe/*
+    # else
+    #     echo ERROR: You refused to delete Bframe\'s directory.
+    #     exit
+    # fi
+    
+    for class in $val_names; do
+	cd ../code
+	mkdir $OUT_DIR/val/bframe/$class
+	python bframe_gen_val.py $class
+	echo "$class generation done. "
+    done
+}
+
+#video_gen
+#idx_gen
+bframe_gen
