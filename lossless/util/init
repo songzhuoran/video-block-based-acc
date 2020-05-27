@@ -1,4 +1,4 @@
-#!/bin/bash
+
 IMG_DIR=/home/songzhuoran/video/video-block-based-acc/davis2016/data/
 OUT_DIR=../data
 
@@ -8,16 +8,6 @@ video_gen(){
 
     rm -rf $OUT_DIR/video/*
     rm -rf $OUT_DIR/mvs/*
-
-    # echo "Warning: Next step will run '$ rm -rf Video & mvs' command. "
-    # read -p "Continue (y/n)?" CONT
-    # if [ "$CONT" = "y" ]; then
-    #     rm -rf $OUT_DIR/video/*
-    #     rm -rf $OUT_DIR/mvs/*
-    # else
-    #     echo ERROR: You refused to delete Video\'s directory.
-    #     exit
-    # fi
 
     for class_str in $IMG_DIR/*; do
         class=${class_str##*/}
@@ -35,16 +25,7 @@ idx_gen(){
     mkdir -p $OUT_DIR/idx/b
 
     rm -rf $OUT_DIR/idx/p/*
-    rm -rf $OUT_DIR/idx/b/*  
-    # echo "Warning: Next step will run '$ rm -rf Index' command. "
-    # read -p "Continue (y/n)?" CONT
-    # if [ "$CONT" = "y" ]; then
-    #     rm -rf $OUT_DIR/idx/p/*
-    #     rm -rf $OUT_DIR/idx/b/*
-    # else
-    #     echo ERROR: You refused to delete Index\'s directory.
-    #     exit
-    # fi
+    rm -rf $OUT_DIR/idx/b/*
 
     for class_str in $IMG_DIR/*; do
 	class=${class_str##*/}
@@ -56,14 +37,6 @@ idx_gen(){
 
 bframe_gen(){
     rm -rf $OUT_DIR/train/bframe/*
-    # echo "Warning: Next step will run '$ rm -rf Bframe' command. "
-    # read -p "Continue (y/n)?" CONT
-    # if [ "$CONT" = "y" ]; then
-    #     rm -rf $OUT_DIR/train/bframe/*
-    # else
-    #     echo ERROR: You refused to delete Bframe\'s directory.
-    #     exit
-    # fi
     
     for class_str in $IMG_DIR/*; do
         class=${class_str##*/}
@@ -74,7 +47,7 @@ bframe_gen(){
     done
 }
 
-#need to modify
+#################need to modify
 #video_gen
 #idx_gen
 bframe_gen

@@ -116,12 +116,17 @@ def bframe_gen():
 
     for i in pflist:
         vis[i] = True
-        frame_mat[i] = cv2.imread(P_DIR+classname+"/%05d.png" % i,0)
+        curstr = '%05d' % i
+        curstr = P_DIR + classname + "/" + curstr + ".png"
+        # print curstr
+        frame_mat[i] = cv2.imread(curstr,0) #init frame
+        # print frame_mat[i]
+
 
     for i in range(framecnt):
         mvsmat.append(set())
 
-    with open(MVS_DIR+classname+".csv","r") as file:
+    with open(RES_DIR+classname+".csv","r") as file:
         datainfo = csv.reader(file)
         for row in datainfo:
             # print(int(row[0]))

@@ -3,10 +3,14 @@ import sys
 import os
 
 
-INPUT_DIR = "../data/val/result/"
+# INPUT_DIR = "../data/val/result/"
+INPUT_DIR = "/home/songzhuoran/video/video-block-based-acc/lossless/data/val/result_p/"
+IDX_DIR="../data/idx/"
+pflist = []
 ANNO_DIR = "/home/songzhuoran/video/video-block-based-acc/davis2016/annotation/"
 
-record_file = open("../data/result.csv", "w")
+# record_file = open("../data/result.csv", "w")
+record_file = open("../data/result_p.csv", "w")
 
 dir_list = os.listdir(INPUT_DIR)
 total_fscore = 0.0
@@ -20,10 +24,22 @@ for dir in dir_list:
     dir_iou = 0.0
     dir_cnt = 0
 
+    #start here
+    pflist = []
+    with open(IDX_DIR+"p/"+dir, "r") as file:
+        for row in file:
+            pflist.append(int(row)-1)
 
-    for file in file_list:
-        input_img = cv2.imread(INPUT_DIR + dir + "/" + file, 0)
-        anno_img = cv2.imread(ANNO_DIR + dir + "/" + file, 0)
+    for pf in pflist:
+        curstr = '%05d' % pf
+        curstr = INPUT_DIR + dir + "/" + curstr + ".png"
+        input_img = cv2.imread(curstr,0)
+        curstr = '%05d' % pf
+        curstr = ANNO_DIR + dir + "/" + curstr + ".png"
+        anno_img = cv2.imread(curstr, 0)
+    # for file in file_list:
+    #     input_img = cv2.imread(INPUT_DIR + dir + "/" + file, 0)
+    #     anno_img = cv2.imread(ANNO_DIR + dir + "/" + file, 0)
         tp_cnt = 0.0
         fp_cnt = 0.0
         fn_cnt = 0.0
@@ -58,7 +74,9 @@ for dir in dir_list:
         total_iou += iou
         total_cnt += 1
 
-        print(file + " calculate down with fscore: " + str(fscore) + " and iou: " + str(iou))
+        # print(file + " calculate down with fscore: " + str(fscore) + " and iou: " + str(iou))
+        curstr = '%05d' % pf
+        print(curstr + " calculate down with fscore: " + str(fscore) + " and iou: " + str(iou))
     print(dir + " calculate down with fscore: " + str(dir_fscore/dir_cnt) + " and iou: " + str(dir_iou/dir_cnt))
     record_file.write(dir + "," + str(dir_fscore/dir_cnt) + "," + str(dir_iou/dir_cnt) + "\n")
 
