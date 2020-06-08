@@ -48,6 +48,6 @@ bframe_gen(){
 }
 
 #################need to modify
-#video_gen
-#idx_gen
+video_gen
+idx_gen
 bframe_gen
