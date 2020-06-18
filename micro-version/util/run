@@ -1,0 +1,16 @@
+
+#need to modify
+./init
+./WARNING.sh
+./get_train_anno
+cd ../code
+
+
+python train.py
+cd ../util
+./gen_bframe_val
+./run_predict
+
+
+cd ../code
+python cal_score.py

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+Bframe_dir=../data/val/bframe
+dst_dir=../data/val/result
+
+val_names="cows scooter-black horsejump-high parkour paragliding-launch kite-surf breakdance drift-straight goat bmx-trees libby motocross-jump drift-chicane dance-twirl blackswan car-roundabout car-shadow dog soapbox camel"
+
+# val_names="libby"
+rm -rf ../data/val/result/*
+
+for dir_name in $val_names; do
+    echo $dir_name
+    mkdir -p $dst_dir/$dir_name
+    for image in $Bframe_dir/$dir_name/*; do
+	image_name=${image##*/}
+	echo image_name=$image_name
+	echo input=$image
+	echo output=$dst_dir/$dir_name/$image_name
+	cd ../code
+	python predict.py $image $dst_dir/$dir_name/$image_name
+	cd ../util
+	# exit
+    done
+done

@@ -1,0 +1,17 @@
+#!/bin/bash
+SRC_DIR=/home/songzhuoran/video/video-block-based-acc/davis2016/annotation/
+INPUT_DIR=../data/train/bframe
+OUTPUT_DIR=../data/train/annotation
+
+rm -rf ../data/train/annotation/*
+
+for file in $INPUT_DIR/*; do
+    tmp1=${file%_*}
+    class=${tmp1##*/}
+    # echo $class
+    name=${file##*_}
+    # echo $name
+    echo "$SRC_DIR/$class/$name"
+    echo "$OUTPUT_DIR/${class}_${name}"
+    cp $SRC_DIR/$class/$name $OUTPUT_DIR/${class}_${name}
+done

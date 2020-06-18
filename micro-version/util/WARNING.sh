@@ -1,0 +1,21 @@
+rm ../data/train/bframe/blackswan*
+rm ../data/train/bframe/breakdance*
+rm ../data/train/bframe/car-roundabout*
+rm ../data/train/bframe/cows*
+rm ../data/train/bframe/dog*
+rm ../data/train/bframe/drift-straight*
+rm ../data/train/bframe/horsejump-high*
+rm ../data/train/bframe/libby*
+rm ../data/train/bframe/paragliding-launch*
+rm ../data/train/bframe/scooter-black*
+rm ../data/train/bframe/bmx-trees*
+rm ../data/train/bframe/camel*
+rm ../data/train/bframe/car-shadow*
+rm ../data/train/bframe/dance-twirl*
+rm ../data/train/bframe/drift-chicane*
+rm ../data/train/bframe/goat*
+rm ../data/train/bframe/kite-surf*
+rm ../data/train/bframe/motocross-jump*
+rm ../data/train/bframe/parkour*
+rm ../data/train/bframe/soapbox*
+
