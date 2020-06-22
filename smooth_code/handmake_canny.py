@@ -1,6 +1,9 @@
+import csv
+import os
+import re
+import cv2
 import numpy as np
 import math
-import cv2
 
 class Canny():
     
@@ -13,14 +16,21 @@ class Canny():
         self.gradMat = None
         self.NMS_Mat = None
         self.img_final = None
+        self.img_str = None
+        self.and_img_str = None
 
-    def edge_detection(self, img_path):
+    def edge_detection(self, img_path, video_name, img_name):
+
+        img_name=re.sub('[.jpg]', '', img_name)
+        img_name = img_name+".png"
+
+        self.img_str = R2_DIR+video_name+"/"+img_name
+        self.and_img_str = R1_DIR+video_name+"/"+img_name
 
         self.img_gray = self.greyed(img_path)
         self.smoothed = self.smooth(self.img_gray)
         self.dx, self.dy, self.gradMat, _ = self.gradients(self.smoothed) #dx,dy,gradMat 分别是x方向梯度、y方向梯度和梯度强度
         self.NMS_Mat = self.NMS(self.gradMat,self.dx, self.dy)
-        # cv2.imwrite("/home/songzhuoran/video/video-block-based-acc/test.png",self.NMS_Mat)
         self.img_final = self.double_threshold(self.NMS_Mat) 
         
         return self.img_final
@@ -40,6 +50,7 @@ class Canny():
         # 灰度化
         img_gray = np.dot(img_rgb[...,:3], [0.299, 0.587, 0.114])
         
+        # return img[...,1]
         return img_gray
     
     # 去除噪音 - 使用 5x5 的高斯滤波器
@@ -181,8 +192,12 @@ class Canny():
         DT = np.zeros([W, H])
         
         # 定义高低阈值
-        TL = 0.1 * np.max(NMS)
+        TL = 0.2 * np.max(NMS)
         TH = 0.3 * np.max(NMS)
+        # print(TL)
+        # print(TH)
+        # TL = 80
+        # TH = 150
         
         for i in range(1, W-1):
             for j in range(1, H-1):
@@ -201,34 +216,74 @@ class Canny():
         for i in range(1, W-1):
             for j in range(1, H-1):
                 if DT[i,j]==1: #边缘点
-                    if self.dx[i,j]>0 and self.dy[i,j]>0:
-                        for x in range(i+5,int((i+5)/8)+8):
-                            for y in range(j+5,int((j+5)/8)*8+8):
-                                if int((i+5)/8)+8 <= 480 and int((j+5)/8)*8+8 <= 854:
-                                    cur_img[x,y] = 255
-                    elif self.dx[i,j]>0 and self.dy[i,j]<0:
-                        for x in range(i+5,int((i+5)/8)*8+8):
-                            for y in range(int((j+5)/8)*8,j+5):
-                                if int((i+5)/8)+8 <= 480 and j+5 <= 854:
-                                    cur_img[x,y] = 255
-                    elif self.dx[i,j]<0 and self.dy[i,j]>0:
-                        for x in range(int((i+5)/8)*8,i+5):
-                            for y in range(j+5,int((j+5)/8)*8+8):
-                                if i+5 <= 480 and int((j+5)/8)*8+8 <= 854:
-                                    cur_img[x,y] = 255
-                    else:
-                        for x in range(int((i+5)/8)*8,i+5):
-                            for y in range(int((j+5)/8)*8,j+5):
-                                if i+5 <= 480 and j+5 <= 854:
-                                    cur_img[x,y] = 255
-        cv2.imwrite("/home/songzhuoran/video/video-block-based-acc/test.png",cur_img)
+                    cur_img[i+5,j+5] = 255
+
+                    # if self.dx[i,j]>0 and self.dy[i,j]>0:
+                    #     for x in range(i+5,int((i+5)/8)+8):
+                    #         for y in range(j+5,int((j+5)/8)*8+8):
+                    #             if int((i+5)/8)+8 <= 480 and int((j+5)/8)*8+8 <= 854:
+                    #                 cur_img[x,y] = 255
+                    # elif self.dx[i,j]>0 and self.dy[i,j]<0:
+                    #     for x in range(i+5,int((i+5)/8)*8+8):
+                    #         for y in range(int((j+5)/8)*8,j+5):
+                    #             if int((i+5)/8)+8 <= 480 and j+5 <= 854:
+                    #                 cur_img[x,y] = 255
+                    # elif self.dx[i,j]<0 and self.dy[i,j]>0:
+                    #     for x in range(int((i+5)/8)*8,i+5):
+                    #         for y in range(j+5,int((j+5)/8)*8+8):
+                    #             if i+5 <= 480 and int((j+5)/8)*8+8 <= 854:
+                    #                 cur_img[x,y] = 255
+                    # else:
+                    #     for x in range(int((i+5)/8)*8,i+5):
+                    #         for y in range(int((j+5)/8)*8,j+5):
+                    #             if i+5 <= 480 and j+5 <= 854:
+                    #                 cur_img[x,y] = 255
+
+
+                    # if self.dx[i,j]<0 and self.dy[i,j]<0:
+                    #     for x in range(i+5,int((i+5)/8)+8):
+                    #         for y in range(j+5,int((j+5)/8)*8+8):
+                    #             if int((i+5)/8)+8 <= 480 and int((j+5)/8)*8+8 <= 854:
+                    #                 cur_img[x,y] = 255
+                    # elif self.dx[i,j]<0 and self.dy[i,j]>0:
+                    #     for x in range(i+5,int((i+5)/8)*8+8):
+                    #         for y in range(int((j+5)/8)*8,j+5):
+                    #             if int((i+5)/8)+8 <= 480 and j+5 <= 854:
+                    #                 cur_img[x,y] = 255
+                    # elif self.dx[i,j]>0 and self.dy[i,j]<0:
+                    #     for x in range(int((i+5)/8)*8,i+5):
+                    #         for y in range(j+5,int((j+5)/8)*8+8):
+                    #             if i+5 <= 480 and int((j+5)/8)*8+8 <= 854:
+                    #                 cur_img[x,y] = 255
+                    # else:
+                    #     for x in range(int((i+5)/8)*8,i+5):
+                    #         for y in range(int((j+5)/8)*8,j+5):
+                    #             if i+5 <= 480 and j+5 <= 854:
+                    #                 cur_img[x,y] = 255
+        
+        cv2.imwrite(self.img_str,cur_img)
 
 
         return DT 
 
 
+O_DIR="/home/songzhuoran/video/video-block-based-acc/davis2016/data/"
+Map_DIR="/home/songzhuoran/video/video-block-based-acc/mapping_val/"
+R1_DIR="/home/songzhuoran/video/video-block-based-acc/smooth_result_mapping/"
+R2_DIR="/home/songzhuoran/video/video-block-based-acc/smooth_result_raw_img/"
 
-canny = Canny()
-edges = canny.edge_detection("/home/songzhuoran/video/video-block-based-acc/mapping_val/blackswan/00000.png")
-# cv2.imwrite("/home/songzhuoran/video/video-block-based-acc/test.png",edges)
-print(edges.shape)
+video_names = os.listdir(Map_DIR)
+for video_name in video_names:
+    print(video_name)
+
+    img_names=os.listdir(Map_DIR+video_name)
+    for img_name in img_names:
+        canny = Canny()
+        # edges = canny.edge_detection(Map_DIR+video_name+"/"+img_name,video_name,img_name)
+
+        img_name=re.sub('[.png]', '', img_name)
+        img_name = img_name+".jpg"
+        edges = canny.edge_detection(O_DIR+video_name+"/"+img_name,video_name,img_name)
+
+
+

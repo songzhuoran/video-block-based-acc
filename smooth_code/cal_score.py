@@ -3,7 +3,7 @@ import sys
 import os
 
 
-INPUT_DIR = "/home/songzhuoran/video/video-block-based-acc/smooth_result/"
+INPUT_DIR = "/home/songzhuoran/video/video-block-based-acc/mapping_test/"
 ANNO_DIR = "/home/songzhuoran/video/video-block-based-acc/davis2016/annotation/"
 
 record_file = open("/home/songzhuoran/video/video-block-based-acc/result.csv", "w")
@@ -13,6 +13,7 @@ total_fscore = 0.0
 total_iou = 0.0
 total_cnt = 0
 for dir in dir_list:
+    # dir = "scooter-black"
     print("Start calculate " + dir + " ...")
     file_list = os.listdir(INPUT_DIR + dir)
 

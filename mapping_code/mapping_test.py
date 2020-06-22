@@ -16,7 +16,10 @@ IDX_DIR="/home/songzhuoran/video/video-block-based-acc/idx/"
 RES_DIR="/home/songzhuoran/video/video-block-based-acc/residual/"
 B_OUT_DIR="/home/songzhuoran/video/video-block-based-acc/mapping_test/"
 P_DIR="/home/songzhuoran/video/video-block-based-acc/favos2016/"
-Bound_DIR="/home/songzhuoran/video/video-block-based-acc/smooth_result_and_val/"
+Bound_DIR="/home/songzhuoran/video/video-block-based-acc/smooth_result_raw_img/"
+Bound2_DIR="/home/songzhuoran/video/video-block-based-acc/smooth_result_mapping/"
+
+record_file = open("/home/songzhuoran/video/video-block-based-acc/result.csv", "a")
 
 mvsmat = []
 vis = [False] * 200
@@ -75,7 +78,9 @@ def bframe_gen_kernel(fcnt):
                         ratio_non_zero = float(num_non_zero/num_total)
                     else:
                         ratio_non_zero = 0.0
-                    if ratio_non_zero >=0.5:
+                    ######for fast object
+                    # if ratio_non_zero >=0.5: 
+                    if ratio_non_zero >=0.3:
                         # for i in range(lengthx):
                         #     for j in range(lengthy):
                         #         if ((dstx+i)>=0 and (dstx+i)<480) and ((dsty+j)>=0 and (dsty+j)<854):
@@ -94,13 +99,21 @@ def bframe_gen_kernel(fcnt):
                                         else :
                                             bframe_img[srcx+i][srcy+j] = (int(dst[dstx+i][dsty+j]) + int(bframe_img[srcx+i][srcy+j])) / 2
                                         img_vis[srcx+i][srcy+j] += 1
-                    elif ratio_non_zero >=0.2 and ratio_non_zero<0.5:
+                    ######for fast object
+                    # elif ratio_non_zero >=0.3 and ratio_non_zero<0.5:
+                    elif ratio_non_zero >=0.1 and ratio_non_zero<0.3:
                         bound_str = Bound_DIR + classname + "/" + '%05d' % int(row[1]) + ".png"
                         bound_img = cv2.imread(bound_str,0) #init frame
+                        bound_str2 = Bound2_DIR + classname + "/" + '%05d' % int(row[1]) + ".png"
+                        bound_img2 = cv2.imread(bound_str2,0) #init frame
                         for i in range(lengthx):
                             for j in range(lengthy):
                                 if ((dstx+i)>=0 and (dstx+i)<480) and ((dsty+j)>=0 and (dsty+j)<854):
                                     if ((srcx+i)>=0 and (srcx+i)<480) and ((srcy+j)>=0 and (srcy+j)<854):
+                                        if bound_img[dstx+i][dsty+j] !=0 and bound_img2[dstx+i][dsty+j] !=0:
+                                            bound_img[dstx+i][dsty+j] =255
+                                        else:
+                                            bound_img[dstx+i][dsty+j] =0
                                         if img_vis[srcx+i][srcy+j] == 0:
                                             bframe_img[srcx+i][srcy+j] = bound_img[dstx+i][dsty+j]
                                         else :
@@ -123,6 +136,7 @@ def bframe_gen_kernel(fcnt):
     cv2.imwrite(curstr,bframe_img)
     mappingratio = float(float(mappingnum)/float(totalnum))
     print(classname + str(fcnt) + " ratio : " + str(mappingratio))
+    record_file.write(classname + str(fcnt) + " ratio : " + str(mappingratio) + "\n")
     
 
 
@@ -194,10 +208,13 @@ def bframe_gen():
 mvsfiles= os.listdir(P_DIR)
 for filename in mvsfiles: # i.e., bear
     classname = filename
+    # classname = "scooter-black"
     vis = [False] * 200
     frame_mat = np.zeros((200,480,854),dtype="uint8")
     mvsmat = []
     bframe_gen()
+
+record_file.close()
     
 
 # def main():
