@@ -11,6 +11,7 @@ def main():
     # mvsfiles= os.listdir(residualpath)
     mvsfiles = {"bmx-trees","drift-straight","horsejump-high","kite-surf"}
     for filename in mvsfiles:
+        os.mkdir(residualpath+filename)
         videofloder = filename
         tmp = mvspath + filename + ".csv"
         csvFile = open(tmp, mode='r')
@@ -24,12 +25,13 @@ def main():
                 row[i] = int(row[i])
         csvFile.close()
         videofile = videopath + videofloder  #open the video, i.e., /home/szr/video/block-mvs/davis2016/bear
-        imgstrs = os.listdir(residualpath+videofloder)
+        imgstrs = os.listdir(videofile)
         for imgstr in imgstrs:
-            resimg_str = residualpath + videofloder + "/" + imgstr
-            resimg = cv2.imread(resimg_str)
-            print(resimg_str)
-            num_img=int(re.sub('[.png]', '', imgstr))
+            imgstr=re.sub('[.jpg]', '', imgstr)
+            num_img = int(imgstr)
+            fd = residualpath+filename+"/"+imgstr+".npy"
+            print(residualpath+filename+"/"+imgstr+".npy")
+            resimg = np.zeros((480,854,3))
 
             for row in data:
                 cur = row[0]
@@ -58,7 +60,7 @@ def main():
                                 if ((srcx+i)>=0 and (srcx+i)<480) and ((srcy+j)>=0 and (srcy+j)<854):
                                     tmpcur = int(curimg[srcx+i][srcy+j][c])
                                     resimg[srcx+i][srcy+j][c] = tmpcur - tmpref
-            cv2.imwrite(resimg_str,resimg)
+            np.save(fd,resimg)
             
 
 
